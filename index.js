@@ -52,12 +52,20 @@ scheduledReload.subscribe(async (reload) => {
 		}
 
 		const currContent = await page.evaluate(async () => {
-			const resp = await fetch(location.href, {
-				credentials: 'same-origin',
-			});
-			const text = await resp.text();
-			return text;
+			try {
+				const resp = await fetch(location.href, {
+					credentials: 'same-origin',
+				});
+				const text = await resp.text();
+				return text;
+			} catch (err) {
+				console.error(err);
+				return undefined;
+			}
 		});
+		if (!currContent) {
+			continue;
+		}
 
 		const prev$ = cheerio.load(prevContent);
 		const curr$ = cheerio.load(currContent);
