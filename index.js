@@ -122,7 +122,7 @@ scheduledReload.subscribe(async (reload) => {
 				/** @type {[string[], string[]]} */ (
 					/** @type {const} */ ([prev$, curr$]).map(($) => [
 						...new Set(
-							[...$('head *')]
+							[...$('head *:not([transient])')]
 								.map(
 									(el) =>
 										el.attribs['src'] ||
