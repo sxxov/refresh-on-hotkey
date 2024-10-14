@@ -18,14 +18,13 @@ const browser = await puppeteer.launch({
 
 const page = (await browser.pages())[0] ?? (await browser.newPage());
 const content = new Store('');
+page.setDefaultNavigationTimeout(0);
 
 // collect the current page source
 void (async () => {
 	for (;;) {
 		try {
-			const resp = await page.waitForNavigation({
-				timeout: 0,
-			});
+			const resp = await page.waitForNavigation();
 			if (!resp) {
 				continue;
 			}
