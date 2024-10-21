@@ -170,7 +170,9 @@ const gkl = new GlobalKeyboardListener();
 await gkl.addListener((e, down) => {
 	if (
 		e.state === 'DOWN' &&
-		(down['LEFT CTRL'] || down['RIGHT CTRL']) &&
+		(process.platform === 'darwin' ?
+			down['LEFT META'] || down['RIGHT META']
+		:	down['LEFT CTRL'] || down['RIGHT CTRL']) &&
 		down.S
 	) {
 		if (!scheduledReload.get()) {
