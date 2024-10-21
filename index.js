@@ -51,18 +51,22 @@ scheduledReload.subscribe(async (reload) => {
 			break;
 		}
 
-		const currContent = await page.evaluate(async () => {
-			try {
-				const resp = await fetch(location.href, {
-					credentials: 'same-origin',
-				});
-				const text = await resp.text();
-				return text;
-			} catch (err) {
-				console.error(err);
-				return undefined;
-			}
-		});
+		/** @type {string | undefined} */
+		let currContent;
+		try {
+			currContent = await page.evaluate(async () => {
+				try {
+					const resp = await fetch(location.href, {
+						credentials: 'same-origin',
+					});
+					const text = await resp.text();
+					return text;
+				} catch (err) {
+					console.error(err);
+					return undefined;
+				}
+			});
+		} catch {}
 		if (!currContent) {
 			continue;
 		}
