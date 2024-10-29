@@ -38,6 +38,7 @@ void (async () => {
 
 // setup scheduled reload
 const scheduledReload = new Store(false);
+// eslint-disable-next-line complexity
 scheduledReload.subscribe(async (reload) => {
 	if (!reload) {
 		return;
@@ -73,6 +74,20 @@ scheduledReload.subscribe(async (reload) => {
 
 		const prev$ = cheerio.load(prevContent);
 		const curr$ = cheerio.load(currContent);
+		const excludedAttrs = ['data-cfemail'];
+		const excludedSelectors = ['[transient]'];
+		for (const $ of [prev$, curr$]) {
+			for (const attr of excludedAttrs) {
+				for (const el of [...$(`[${attr}]`)]) {
+					$(el).removeAttr(attr);
+				}
+			}
+			for (const selector of excludedSelectors) {
+				for (const el of [...$(selector)]) {
+					$(el).remove();
+				}
+			}
+		}
 
 		if (prevContent !== currContent) {
 			const [prevBody, currBody] = /** @type {[string, string]} */ (
@@ -126,7 +141,7 @@ scheduledReload.subscribe(async (reload) => {
 				/** @type {[string[], string[]]} */ (
 					/** @type {const} */ ([prev$, curr$]).map(($) => [
 						...new Set(
-							[...$('head *:not([transient])')]
+							[...$('head *')]
 								.map(
 									(el) =>
 										el.attribs['src'] ||
